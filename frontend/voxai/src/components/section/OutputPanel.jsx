@@ -1,58 +1,41 @@
-import { Play, Download } from "lucide-react";
+import { Play, Download } from "lucide-react"
+
+const wave = Array.from({ length: 48 }, () => Math.floor(Math.random() * 80) + 10)
+const progress = 0.4
 
 function StudioOutputPanel() {
-  const wave = Array.from({ length: 70 }, () =>
-    Math.floor(Math.random() * 100)
-  );
-
-  const progress = 0.4; // 40% played
-
   return (
-    <div className="bg-stone-900 h-screen pt-[2cm] px-4 text-white">
+    <div className="bg-white h-screen flex flex-col border-l border-slate-200 p-4 gap-4">
 
-      {/* VOICE NOTE CONTAINER */}
-      <div className="flex items-center gap-4 bg-stone-800 border border-stone-700 rounded px-4 py-3">
+      <p className="text-xs text-slate-400 uppercase tracking-widest font-medium">Output</p>
 
-        {/* PLAY */}
-        <button className="w-10 h-10 flex items-center justify-center bg-amber-500 text-black rounded-full">
-          <Play size={16} />
+      <div className="flex items-center gap-3 border border-slate-200 rounded-xl bg-slate-50 px-3 py-2.5">
+        <button className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-600 flex items-center justify-center text-white">
+          <Play size={14} />
         </button>
-
-        {/* WAVEFORM */}
-        <div className="flex items-center gap-[2px] flex-1 h-10">
-
-          {wave.map((h, i) => {
-            const isPlayed = i / wave.length < progress;
-
-            return (
-              <div
-                key={i}
-                className={`w-[2px] rounded-full ${
-                  isPlayed ? "bg-white" : "bg-stone-600"
-                }`}
-                style={{
-                  height: `${h * 0.6}%`,
-                }}
-              />
-            );
-          })}
-
+        <div className="flex items-center gap-[2px] flex-1 h-8">
+          {wave.map((h, i) => (
+            <div
+              key={i}
+              className="w-[2px] rounded-full"
+              style={{
+                height: `${h}%`,
+                background: i / wave.length < progress ? "#2563eb" : "#cbd5e1",
+              }}
+            />
+          ))}
         </div>
-
-        {/* TIME */}
-        <p className="text-xs text-neutral-400">
-          0:32
-        </p>
-
-        {/* DOWNLOAD (SMALL END ICON) */}
-        <button className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-white transition">
-          <Download size={16} />
+        <span className="text-xs text-slate-500 flex-shrink-0">0:32</span>
+        <button className="text-slate-400 hover:text-blue-600 transition-colors">
+          <Download size={15} />
         </button>
-
       </div>
 
+      <p className="text-xs text-slate-400 uppercase tracking-widest font-medium mt-2">Recent</p>
+      <p className="text-xs text-slate-400">No jingles yet</p>
+
     </div>
-  );
+  )
 }
 
-export default StudioOutputPanel;
+export default StudioOutputPanel

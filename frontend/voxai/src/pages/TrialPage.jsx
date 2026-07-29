@@ -4,10 +4,10 @@ import FooterLayout from "../components/layout/Footer"
 
 function TrialGeneratorPage () {
     return (
-        <div className="bg-stone-800 h-screen">
+        <div className="bg-slate-50 min-h-screen">
             <NavigationBarLayout/>
             <TrialPromptSectionLayout/>
-            <div className="mt-[3cm]">
+            <div className="mt-[3cm] bg-stone-800">
                 <FooterLayout/>
             </div>
         </div>

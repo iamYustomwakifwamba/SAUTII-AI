@@ -1,59 +1,44 @@
-
-import { UserRound, WandSparkles, History, Zap } from "lucide-react";
+import { UserRound, WandSparkles, History, Zap } from "lucide-react"
 
 function LeftStudioPanel() {
   return (
-    <div className="bg-stone-900 h-screen flex flex-col">
+    <div className="bg-white h-screen flex flex-col border-r border-slate-200">
 
-      {/* USER BLOCK */}
-      <div className="pt-5">
-        <div className="flex gap-2 border border-amber-600 mx-2 rounded-xl h-14 px-3 items-center">
-
-          <div className="text-white bg-amber-600 rounded-full p-2 flex items-center justify-center">
-            <UserRound size={18} />
+      <div className="pt-4 px-3">
+        <div className="flex items-center gap-2 border border-blue-600 rounded-xl px-3 py-2.5">
+          <div className="bg-blue-600 rounded-full p-1.5 flex items-center justify-center text-white">
+            <UserRound size={16} />
           </div>
-
-          <p className="text-white text-sm">
-            Yusto Mwakifwamba
-          </p>
-
+          <span className="text-slate-900 text-sm font-medium">Yusto Mwakifwamba</span>
         </div>
       </div>
 
-      {/* NAVIGATION */}
-      <div className="mt-6 px-2 flex flex-col gap-2 text-sm">
-
-        <div className="flex items-center gap-3 text-white bg-amber-600 rounded-lg px-3 py-2 cursor-pointer">
-          <WandSparkles size={18} />
+      <nav className="mt-4 px-3 flex flex-col gap-1 text-sm">
+        <div className="flex items-center gap-3 bg-blue-600 text-white font-medium rounded-lg px-3 py-2 cursor-pointer">
+          <WandSparkles size={16} />
           Studio
         </div>
-
-        <div className="flex items-center gap-3 text-neutral-400 hover:text-white hover:bg-stone-800 rounded-lg px-3 py-2 cursor-pointer">
-          <History size={18} />
+        <div className="flex items-center gap-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg px-3 py-2 cursor-pointer transition-colors">
+          <History size={16} />
           History
         </div>
+      </nav>
 
-      </div>
+      <div className="mx-3 my-4 border-t border-slate-200" />
 
-      {/* DIVIDER */}
-      <div className="mx-2 my-5 border-t border-stone-700"></div>
-
-      {/* CREDITS */}
-      <div className="mt-auto mx-2 mb-4 border border-stone-700 rounded-xl p-3">
-
-        <div className="flex items-center gap-2 text-white">
-          <Zap size={16} className="text-amber-500" />
-          <p className="text-sm">Credits</p>
+      <div className="mt-auto mx-3 mb-4 border border-slate-200 rounded-xl p-3">
+        <div className="flex items-center gap-2 text-slate-900 mb-1">
+          <Zap size={15} className="text-blue-600" />
+          <span className="text-sm font-medium">Credits</span>
         </div>
-
-        <p className="text-neutral-500 text-xs mt-1">
-          12 remaining this month
-        </p>
-
+        <p className="text-slate-500 text-xs">12 remaining this month</p>
+        <div className="mt-2 h-1 bg-slate-200 rounded-full">
+          <div className="h-full w-2/5 bg-blue-600 rounded-full" />
+        </div>
       </div>
 
     </div>
-  );
+  )
 }
 
-export default LeftStudioPanel;
+export default LeftStudioPanel

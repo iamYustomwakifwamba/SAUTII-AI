@@ -4,7 +4,7 @@ import FooterLayout from "../components/layout/Footer"
 
 function HomePageView () {
     return (
-        <div className="bg-stone-800 h-screen">
+        <div className="bg-stone-800 min-h-screen">
             <NavigationBarLayout/>
             <HomeLandingLayout/>
             <FooterLayout/>
