@@ -22,7 +22,7 @@ function PromptBox() {
 
             <button className="flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-slate-600 hover:border-blue-500 hover:text-blue-600 transition">
               <Mic2 size={16} />
-              Male Voice
+              Ads Style
             </button>
 
             <button className="flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-slate-600 hover:border-blue-500 hover:text-blue-600 transition">
