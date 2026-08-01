@@ -4,6 +4,8 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { login } from "../../api/auth";
 import Alert from "../UI/Alert";
 import { useNavigate } from "react-router-dom";
+import { getProfile } from "../../api/auth";
+import { useAuth } from "../../context/AuthContext";
 
 
 function SautiiLogo() {
@@ -33,6 +35,7 @@ function LoginFormSection() {
   const [success, setSuccess] = useState("")
 
   const navigate = useNavigate();
+  const {setUser} = useAuth()
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -46,6 +49,9 @@ function LoginFormSection() {
 
       localStorage.setItem("access", data.access)
       localStorage.setItem("refresh", data.refresh)
+
+      const profile = await getProfile();
+      setUser(profile)
 
       console.log("Login successful")
       setSuccess("Login success redirecting ....")

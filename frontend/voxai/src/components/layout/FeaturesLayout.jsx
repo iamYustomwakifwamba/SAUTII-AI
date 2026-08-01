@@ -11,6 +11,9 @@ import {
   BookOpenText,
   Voicemail,
   ArrowRight,
+  Feather,
+  ScrollText,
+  Megaphone,
 } from "lucide-react"
 
 const features = [
@@ -23,6 +26,9 @@ const features = [
   { icon: <Headphones size={20} />, title: "Customer care", desc: "Handles support calls 24/7 — built to scale for telecoms and beyond." },
   { icon: <BookOpenText size={20} />, title: "Audiobook narration", desc: "Turns scripts and articles into natural audiobook or podcast audio." },
   { icon: <Voicemail size={20} />, title: "Automated voice menus", desc: "Smart IVR that understands speech and routes callers instantly." },
+  { icon: <Feather size={20} />, title: "Story teller", desc: "Narrates original stories and tales with warm, expressive AI voice." },
+  { icon: <ScrollText size={20} />, title: "Poetry", desc: "Recites shairi and poetry with rhythm, emotion, and authentic delivery." },
+  { icon: <Megaphone size={20} />, title: "Motivation speaker", desc: "Delivers powerful, energetic speeches that inspire and motivate listeners." },
 ]
 
 export default function FeaturesLayout() {

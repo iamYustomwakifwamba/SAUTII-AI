@@ -1,7 +1,9 @@
 // LeftPanel.jsx
 import { useEffect, useState } from "react"
-import { UserRound, WandSparkles, History, Zap, ChevronDown, FileAudio } from "lucide-react"
+import { UserRound, WandSparkles, History, Zap, ChevronDown, FileAudio, LogOut, Phone } from "lucide-react"
 import { getProfile } from "../../api/auth"
+import { useAuth } from "../../context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 // dummy data ya muda -- baadaye itatolewa kwenye database
 const historyItems = [
@@ -13,22 +15,30 @@ const historyItems = [
 
 function LeftStudioPanel() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const loadUser = async () => {
+  //   const loadUser = async () => {
 
-      try {
-        const data = await getProfile();
-        setUser(data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  //     try {
+  //       const data = await getProfile();
+  //       setUser(data)
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
 
-    loadUser()
-  }, [])
+  //   loadUser()
+  // }, [])
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login")
+    console.log("Logged out")
+  }
 
   return (
     <div className="bg-white flex flex-col border-b lg:border-b-0 lg:border-r border-slate-200 lg:h-full">
@@ -38,7 +48,7 @@ function LeftStudioPanel() {
           <div className="bg-blue-600 rounded-full p-1.5 flex items-center justify-center text-white flex-shrink-0">
             <UserRound size={16} />
           </div>
-          <span className="text-slate-900 text-sm font-medium truncate">{user ? `${user.firstname} ${user.lastname}` : "loading user..." }</span>
+          <span className="text-slate-900 text-sm font-medium truncate">{user ? `${user.firstname} ${user.lastname}` : "loading user" }</span>
         </div>
       </div>
 
@@ -95,6 +105,24 @@ function LeftStudioPanel() {
         <div className="mt-2 h-1 bg-slate-200 rounded-full">
           <div className="h-full w-2/5 bg-blue-600 rounded-full" />
         </div>
+      </div>
+
+      {/* CUSTOMER CARE + LOGOUT */}
+      <div className="mx-3 mb-3 lg:mb-4 flex flex-col gap-1">
+        
+        <a href="tel:+255769350103" className="flex items-center gap-2 text-slate-500 hover:text-blue-600 text-xs px-2.5 py-2 rounded-lg transition-colors">
+          <Phone size={14} className="flex-shrink-0" />
+          +255 769 350 103
+        </a>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-slate-500 hover:text-red-600 text-xs font-medium px-2.5 py-2 rounded-lg transition-colors cursor-pointer"
+        >
+          <LogOut size={14} className="flex-shrink-0" />
+          Logout
+        </button>
       </div>
 
     </div>
