@@ -11,6 +11,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('role', 'is_active', 'is_staff', 'is_superuser', 'country')
     search_fields = ('email', 'firstname', 'lastname', 'phonenumber')
     ordering = ('date_joined',)
+    readonly_fields = ('date_joined', 'last_login')
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),

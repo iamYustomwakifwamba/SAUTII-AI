@@ -1,3 +1,4 @@
+// OutputPanel.jsx
 import { Play, Download } from "lucide-react"
 
 const wave = Array.from({ length: 48 }, () => Math.floor(Math.random() * 80) + 10)
@@ -5,7 +6,7 @@ const progress = 0.4
 
 function StudioOutputPanel() {
   return (
-    <div className="bg-white h-screen flex flex-col border-l border-slate-200 p-4 gap-4">
+    <div className="bg-white flex flex-col border-t lg:border-t-0 lg:border-l border-slate-200 p-4 gap-4 lg:h-full lg:overflow-y-auto">
 
       <p className="text-xs text-slate-400 uppercase tracking-widest font-medium">Output</p>
 
@@ -13,7 +14,7 @@ function StudioOutputPanel() {
         <button className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-600 flex items-center justify-center text-white">
           <Play size={14} />
         </button>
-        <div className="flex items-center gap-[2px] flex-1 h-8">
+        <div className="flex items-center gap-[2px] flex-1 h-8 min-w-0">
           {wave.map((h, i) => (
             <div
               key={i}
@@ -26,7 +27,7 @@ function StudioOutputPanel() {
           ))}
         </div>
         <span className="text-xs text-slate-500 flex-shrink-0">0:32</span>
-        <button className="text-slate-400 hover:text-blue-600 transition-colors">
+        <button className="text-slate-400 hover:text-blue-600 transition-colors flex-shrink-0">
           <Download size={15} />
         </button>
       </div>

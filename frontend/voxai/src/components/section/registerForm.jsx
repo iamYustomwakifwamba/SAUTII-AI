@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { TypeAnimation } from "react-type-animation";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
-import { login } from "../../api/auth";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Phone, Globe, ALargeSmall } from "lucide-react";
+import { register } from "../../api/auth";
 import Alert from "../UI/Alert";
-import { useNavigate } from "react-router-dom";
-
 
 function SautiiLogo() {
   return (
@@ -24,43 +22,48 @@ function SautiiLogo() {
   );
 }
 
-function LoginFormSection() {
+const countries = [
+  "Tanzania",
+  "Kenya",
+  "Uganda",
+  "Rwanda",
+  "Burundi",
+  "Other",
+];
+
+function RegisterFormSection() {
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("")
-  const [email, setEmail] = useState("")
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [country, setCountry] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-      setError("");
-      setSuccess("")
+        setLoading(true)
+        setError("")
+        setSuccess("")
+        const data = await register(firstName, lastName, phoneNumber, country, email, password)
 
-      const data = await login(email, password);
+        console.log(data)
+        setSuccess(data.message)
+    }catch(error){
+        console.log(error.response.data)
 
-      localStorage.setItem("access", data.access)
-      localStorage.setItem("refresh", data.refresh)
-
-      console.log("Login successful")
-      setSuccess("Login success redirecting ....")
-      setTimeout(() => {
-        navigate("/studio")
-      }, 2000);
-
-    } catch (error) {
-      console.log(error);
-      
-      error.response ? setError("Ivalid email or password") : setError("Something went wrong")
-    }finally{
-      setLoading(false)
+        error.response ? setError(error.response.data) : setError("Something went Wrong")
+    }finally {
+        setLoading(false)
     }
-  }
+    
+  };
 
   return (
     <div className="h-screen w-full bg-slate-50 flex overflow-hidden">
@@ -68,7 +71,6 @@ function LoginFormSection() {
       {/* LEFT SIDE - BRAND + ANIMATED TEXT */}
       <div className="w-1/2 hidden md:flex flex-col justify-center px-16 relative">
 
-        {/* subtle decorative backdrop */}
         <div className="absolute top-16 left-16 w-72 h-72 bg-blue-100 rounded-full blur-3xl opacity-60" />
         <div className="absolute bottom-24 left-32 w-56 h-56 bg-blue-200 rounded-full blur-3xl opacity-40" />
 
@@ -112,8 +114,8 @@ function LoginFormSection() {
 
       </div>
 
-      {/* RIGHT SIDE - LOGIN FORM (full white half) */}
-      <div className="w-full md:w-1/2 h-screen bg-white flex items-center justify-center px-10 md:px-20">
+      {/* RIGHT SIDE - REGISTER FORM */}
+      <div className="w-full md:w-1/2 h-screen bg-white flex items-center justify-center px-6 sm:px-10 md:px-16 overflow-y-auto py-10">
 
         <div className="w-full max-w-sm">
 
@@ -123,13 +125,44 @@ function LoginFormSection() {
           </div>
 
           <h1 className="text-slate-900 text-2xl font-bold">
-            Welcome back
+            Create your account
           </h1>
           <p className="text-slate-500 mt-1.5 text-sm">
-            Login to continue creating with sautii
+            Join sautii and start creating AI jingles
           </p>
 
-          <form className="mt-10 space-y-5" onSubmit={handleLogin}>
+          <form className="mt-8 space-y-5" onSubmit={handleRegister}>
+
+            {/* FIRST + LAST NAME */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-700 text-xs font-medium">First name</label>
+                <div className="relative mt-1.5">
+                  <User size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Yusto"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-700 text-xs font-medium">Last name</label>
+                <div className="relative mt-1.5">
+                  <User size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Mwakifwamba"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  />
+                </div>
+              </div>
+            </div>
 
             {/* EMAIL */}
             <div>
@@ -146,12 +179,47 @@ function LoginFormSection() {
               </div>
             </div>
 
+            {/* PHONE + COUNTRY */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-700 text-xs font-medium">Phone number</label>
+                <div className="relative mt-1.5">
+                  <Phone size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="0712 345 678"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-700 text-xs font-medium">Country</label>
+                <div className="relative mt-1.5">
+                  <Globe size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <select
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3.5 text-sm text-slate-900 outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled>
+                      Select
+                    </option>
+                    {countries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
             {/* PASSWORD */}
             <div>
-              <div className="flex items-center justify-between">
-                <label className="text-slate-700 text-xs font-medium">Password</label>
-                <span className="text-xs text-blue-600 hover:underline cursor-pointer">Forgot password?</span>
-              </div>
+              <label className="text-slate-700 text-xs font-medium">Password</label>
               <div className="relative mt-1.5">
                 <Lock size={17} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
@@ -170,27 +238,30 @@ function LoginFormSection() {
                 </button>
               </div>
             </div>
+
             {error && (
-              <Alert message={error} type="error"/>
+                <Alert type="error" message={error}/>
             )}
+
             {success && (
-              <Alert message={success} type="success"/>
+                <Alert type="success" message={success}/>
             )}
 
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full mt-2 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-blue-600/25"
             >
               {loading ? (
                 <>
-                  <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Logging in....
+                 <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                 Creating....
                 </>
-              ): (
+              ):(
                 <>
-                  Login 
-                  <ArrowRight size={16}/>
+                 Create account
+                 <ArrowRight size={16} />
                 </>
               )}
             </button>
@@ -219,9 +290,9 @@ function LoginFormSection() {
           </button>
 
           <p className="text-slate-500 text-sm text-center mt-7">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <span className="text-blue-600 font-medium cursor-pointer hover:underline">
-              Sign up
+              Login
             </span>
           </p>
 
@@ -232,4 +303,4 @@ function LoginFormSection() {
   );
 }
 
-export default LoginFormSection;
+export default RegisterFormSection;

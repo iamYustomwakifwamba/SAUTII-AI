@@ -68,7 +68,7 @@ function NavigationBarLayout() {
         {/* Desktop auth buttons */}
         <div className="hidden md:flex items-center gap-2.5">
           <Link
-            to="/signup"
+            to="/register"
             className="text-slate-700 text-sm font-medium px-4 py-2 rounded-full border border-transparent hover:border-slate-200 hover:bg-slate-50 transition-colors"
           >
             Sign up
