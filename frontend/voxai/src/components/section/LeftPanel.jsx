@@ -4,35 +4,39 @@ import { UserRound, WandSparkles, History, Zap, ChevronDown, FileAudio, LogOut, 
 import { getProfile } from "../../api/auth"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
+import { getRecentJingles } from "../../api/studio"
 
 // dummy data ya muda -- baadaye itatolewa kwenye database
-const historyItems = [
-  { id: 1, title: "Hotel welcome jingle" },
-  { id: 2, title: "Saloon promo audio" },
-  { id: 3, title: "Logistics ad - 30sec" },
-  { id: 4, title: "Restaurant opening jingle" },
-]
+// const historyItems = [
+//   { id: 1, title: "Hotel welcome jingle" },
+//   { id: 2, title: "Saloon promo audio" },
+//   { id: 3, title: "Logistics ad - 30sec" },
+//   { id: 4, title: "Restaurant opening jingle" },
+// ]
 
 function LeftStudioPanel() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+  const [historyItems, setHistoryItems] = useState([])
   // const [user, setUser] = useState(null)
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  // useEffect(() => {
+  useEffect(() => {
 
-  //   const loadUser = async () => {
+    const loadHistory = async () => {
+      
+      try {
+        
+        const data = await getRecentJingles()
+        setHistoryItems(data)
 
-  //     try {
-  //       const data = await getProfile();
-  //       setUser(data)
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-
-  //   loadUser()
-  // }, [])
+      }catch(error) {
+        console.log(error)
+      }
+    }
+    loadHistory()
+    
+  }, [])
 
   const handleLogout = () => {
     logout();

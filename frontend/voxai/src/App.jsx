@@ -25,6 +25,11 @@ function App () {
           <StudioPage/>
         </ProtectedRoute>
       }/>
+      <Route path="/studio/:id" element={
+        <ProtectedRoute>
+          <StudioPage/>
+        </ProtectedRoute>
+      }/>
       <Route path="/features" element={<FeaturesPage/>}/>
     </Routes>
   )
