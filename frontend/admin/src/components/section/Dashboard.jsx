@@ -13,6 +13,8 @@ import {
   CreditCard as CardIcon,
   AlertTriangle,
   CheckCheck,
+  Search,
+  SquareChevronLeft,
 } from "lucide-react"
 
 const stats = [
@@ -36,7 +38,6 @@ const recentCustomers = [
   { id: 3, name: "Grace Kileo", email: "grace@example.com", joined: "Aug 5" },
 ]
 
-// dummy data ya muda -- baadaye itatolewa kwenye database
 const notifications = [
   {
     id: 1,
@@ -95,7 +96,6 @@ function DashboardSection() {
 
   const unreadCount = notifList.filter((n) => n.unread).length
 
-  // funga dropdown ukibofya nje yake
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -113,36 +113,42 @@ function DashboardSection() {
   return (
     <div className="bg-slate-50 h-full overflow-y-auto flex flex-col">
 
-      {/* TOP BAR */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-200 bg-white flex-shrink-0 relative z-10">
-        <div>
-          <h1 className="text-slate-900 text-lg sm:text-xl font-bold">Overview</h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-0.5 hidden sm:block">
-            Welcome back, here's what's happening today.
-          </p>
+      {/* TOP BAR - kufuata muundo wa ElevenLabs: title + search + icons */}
+      <div className="flex items-center gap-4 px-4 sm:px-6 py-3 border-b border-slate-200 bg-white flex-shrink-0 relative z-10">
+
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <SquareChevronLeft size={18} className="text-slate-400 hidden sm:block" />
+          <span className="text-slate-900 text-sm font-medium">Overview</span>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* SEARCH BAR - katikati, kama picture */}
+        <div className="flex-1 max-w-md mx-auto hidden md:flex">
+          <div className="w-full flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-400">
+            <Search size={15} />
+            <span className="text-sm">Search everything...</span>
+            <span className="ml-auto text-[11px] border border-slate-200 rounded px-1.5 py-0.5 text-slate-400">⌘K</span>
+          </div>
+        </div>
 
-          {/* NOTIFICATION BELL + DROPDOWN */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-auto">
+
           <div className="relative" ref={notifRef}>
             <button
               type="button"
               onClick={() => setNotifOpen((prev) => !prev)}
-              className="relative w-9 h-9 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 transition-colors"
+              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
               aria-label="Notifications"
             >
-              <Bell size={18} />
+              <Bell size={17} />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1.5 w-2 h-2 bg-blue-600 rounded-full border border-white" />
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-600 rounded-full" />
               )}
             </button>
 
             {notifOpen && (
-              <div className="absolute right-0 mt-2 w-[320px] sm:w-96 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-50">
+              <div className="absolute right-0 mt-2 w-[320px] sm:w-96 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50">
 
-                {/* HEADER */}
-                <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <p className="text-slate-900 font-semibold text-sm">Notifications</p>
                     {unreadCount > 0 && (
@@ -160,7 +166,6 @@ function DashboardSection() {
                   </button>
                 </div>
 
-                {/* LIST */}
                 <div className="max-h-80 overflow-y-auto">
                   {notifList.length > 0 ? (
                     notifList.map((n) => {
@@ -172,7 +177,7 @@ function DashboardSection() {
                             n.unread ? "bg-blue-50/40" : ""
                           }`}
                         >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${style}`}>
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${style}`}>
                             <Icon size={14} />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -181,7 +186,7 @@ function DashboardSection() {
                             <p className="text-slate-400 text-[11px] mt-1">{n.time}</p>
                           </div>
                           {n.unread && (
-                            <span className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1.5" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0 mt-1.5" />
                           )}
                         </div>
                       )
@@ -191,8 +196,7 @@ function DashboardSection() {
                   )}
                 </div>
 
-                {/* FOOTER */}
-                <div className="px-4 py-3 border-t border-slate-100">
+                <div className="px-4 py-2.5 border-t border-slate-100">
                   <button className="w-full text-center text-xs text-blue-600 hover:underline font-medium">
                     View all notifications
                   </button>
@@ -202,70 +206,67 @@ function DashboardSection() {
             )}
           </div>
 
-          {/* PROFILE */}
           <button
             type="button"
-            className="flex items-center gap-2 pl-1 pr-1 sm:pr-3 py-1 rounded-full hover:bg-slate-100 transition-colors"
+            className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0"
           >
-            <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
-              YM
-            </div>
-            <span className="hidden sm:block text-sm font-medium text-slate-700">Yusto M.</span>
+            YM
           </button>
         </div>
       </div>
 
       {/* CONTENT */}
-      <div className="p-4 sm:p-6">
+      <div className="p-4 sm:p-6 flex flex-col gap-5">
 
-        {/* STAT CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        {/* STAT CARDS - flat, mistari nyembamba, kufuata muundo wa cards flat */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           {stats.map(({ label, value, change, trend, icon: Icon }) => (
-            <div key={label} className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                  <Icon size={16} />
-                </div>
-                <span className={`flex items-center gap-0.5 text-xs font-medium ${trend === "up" ? "text-green-600" : "text-red-500"}`}>
-                  {trend === "up" ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-                  {change}
-                </span>
+            <div
+              key={label}
+              className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3 hover:border-slate-300 transition-colors"
+            >
+              <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 flex-shrink-0">
+                <Icon size={16} />
               </div>
-              <div>
-                <p className="text-slate-900 text-xl font-bold">{value}</p>
-                <p className="text-slate-500 text-xs mt-0.5">{label}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-slate-900 text-base font-semibold truncate">{value}</p>
+                <p className="text-slate-400 text-xs truncate">{label}</p>
               </div>
+              <span className={`flex items-center gap-0.5 text-xs font-medium flex-shrink-0 ${trend === "up" ? "text-green-600" : "text-red-500"}`}>
+                {trend === "up" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                {change}
+              </span>
             </div>
           ))}
         </div>
 
         {/* CHART + RECENT CUSTOMERS */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
 
-          <div className="xl:col-span-2 bg-white border border-slate-200 rounded-2xl p-4 sm:p-5">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-slate-900 font-semibold text-sm">Revenue overview</p>
+          <div className="xl:col-span-2 bg-white border border-slate-200 rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-slate-900 font-medium text-sm">Revenue overview</p>
               <button className="text-slate-400 hover:text-slate-600 transition-colors">
-                <MoreHorizontal size={17} />
+                <MoreHorizontal size={16} />
               </button>
             </div>
-            <div className="h-48 flex items-end gap-2">
+            <div className="h-44 flex items-end gap-2">
               {[40, 65, 50, 80, 60, 90, 70, 55, 85, 95, 75, 100].map((h, i) => (
                 <div
                   key={i}
-                  className="flex-1 bg-blue-100 hover:bg-blue-500 rounded-t-md transition-colors"
+                  className="flex-1 bg-slate-100 hover:bg-blue-500 rounded-t transition-colors"
                   style={{ height: `${h}%` }}
                 />
               ))}
             </div>
           </div>
 
-          <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5">
-            <p className="text-slate-900 font-semibold text-sm mb-4">Recent customers</p>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5">
+            <p className="text-slate-900 font-medium text-sm mb-4">Recent customers</p>
             <div className="flex flex-col gap-3">
               {recentCustomers.map((customer) => (
                 <div key={customer.id} className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-medium flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 text-slate-500 flex items-center justify-center text-xs font-medium flex-shrink-0">
                     {initials(customer.name)}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -281,10 +282,10 @@ function DashboardSection() {
         </div>
 
         {/* RECENT TRANSACTIONS */}
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
-          <div className="flex items-center justify-between px-4 sm:px-5 py-4 border-b border-slate-100">
-            <p className="text-slate-900 font-semibold text-sm">Recent transactions</p>
+          <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-200">
+            <p className="text-slate-900 font-medium text-sm">Recent transactions</p>
             <button className="text-blue-600 text-xs font-medium hover:underline">View all</button>
           </div>
 
@@ -292,11 +293,11 @@ function DashboardSection() {
             <table className="w-full text-sm border-separate border-spacing-0">
               <thead>
                 <tr>
-                  <th className="text-left text-slate-400 text-xs uppercase tracking-wide font-medium px-4 sm:px-5 py-3">Customer</th>
-                  <th className="text-left text-slate-400 text-xs uppercase tracking-wide font-medium px-4 py-3">Plan</th>
-                  <th className="text-left text-slate-400 text-xs uppercase tracking-wide font-medium px-4 py-3">Amount</th>
-                  <th className="text-left text-slate-400 text-xs uppercase tracking-wide font-medium px-4 py-3">Status</th>
-                  <th className="text-right text-slate-400 text-xs uppercase tracking-wide font-medium px-4 sm:px-5 py-3">Date</th>
+                  <th className="text-left text-slate-400 text-xs font-medium px-4 sm:px-5 py-2.5">Customer</th>
+                  <th className="text-left text-slate-400 text-xs font-medium px-4 py-2.5">Plan</th>
+                  <th className="text-left text-slate-400 text-xs font-medium px-4 py-2.5">Amount</th>
+                  <th className="text-left text-slate-400 text-xs font-medium px-4 py-2.5">Status</th>
+                  <th className="text-right text-slate-400 text-xs font-medium px-4 sm:px-5 py-2.5">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -304,7 +305,7 @@ function DashboardSection() {
                   <tr key={tx.id} className="group">
                     <td className="px-4 sm:px-5 py-3 border-t border-slate-100 group-hover:bg-slate-50 transition-colors">
                       <div className="flex items-center gap-2.5 whitespace-nowrap">
-                        <div className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-[11px] font-semibold flex-shrink-0">
+                        <div className="w-7 h-7 rounded-lg bg-slate-50 border border-slate-100 text-slate-500 flex items-center justify-center text-[11px] font-medium flex-shrink-0">
                           {initials(tx.name)}
                         </div>
                         <span className="text-slate-900 font-medium">{tx.name}</span>
@@ -317,7 +318,7 @@ function DashboardSection() {
                       {tx.amount}
                     </td>
                     <td className="px-4 py-3 border-t border-slate-100 whitespace-nowrap group-hover:bg-slate-50 transition-colors">
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusStyles[tx.status]}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${statusStyles[tx.status]}`}>
                         {tx.status}
                       </span>
                     </td>
