@@ -1,5 +1,4 @@
 // DashboardSection.jsx
-import { useState, useRef, useEffect } from "react"
 import {
   Wallet,
   Users,
@@ -8,20 +7,22 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   MoreHorizontal,
-  Bell,
-  UserPlus,
-  CreditCard as CardIcon,
-  AlertTriangle,
-  CheckCheck,
-  Search,
-  SquareChevronLeft,
+  AudioLines,
+  UserCheck,
+  XCircle,
+  UserX,
 } from "lucide-react"
+import TopBar from "./TopBar"
 
 const stats = [
   { label: "Total income", value: "TZS 12.4M", change: "+8.2%", trend: "up", icon: Wallet },
   { label: "Total customers", value: "1,284", change: "+4.6%", trend: "up", icon: Users },
   { label: "Total subscriptions", value: "312", change: "-1.3%", trend: "down", icon: CreditCard },
   { label: "Total staff", value: "18", change: "+2", trend: "up", icon: UserCog },
+  { label: "Total audio generated", value: "4,932", change: "+12.5%", trend: "up", icon: AudioLines },
+  { label: "Active customers", value: "1,096", change: "+3.1%", trend: "up", icon: UserCheck },
+  { label: "Failed subscriptions", value: "24", change: "+5.4%", trend: "down", icon: XCircle },
+  { label: "Inactive customers", value: "188", change: "-2.2%", trend: "up", icon: UserX },
 ]
 
 const recentTransactions = [
@@ -38,47 +39,6 @@ const recentCustomers = [
   { id: 3, name: "Grace Kileo", email: "grace@example.com", joined: "Aug 5" },
 ]
 
-const notifications = [
-  {
-    id: 1,
-    type: "customer",
-    title: "New customer registered",
-    desc: "Amina Hassan just created an account.",
-    time: "5m ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    type: "payment",
-    title: "Payment received",
-    desc: "Yusto Mwakifwamba paid TZS 45,000 for Pro plan.",
-    time: "1h ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    type: "alert",
-    title: "Payment failed",
-    desc: "Grace Kileo's transaction for Business plan failed.",
-    time: "3h ago",
-    unread: true,
-  },
-  {
-    id: 4,
-    type: "customer",
-    title: "New customer registered",
-    desc: "John Mrema just created an account.",
-    time: "1d ago",
-    unread: false,
-  },
-]
-
-const notificationIcon = {
-  customer: { icon: UserPlus, style: "bg-blue-50 text-blue-600" },
-  payment: { icon: CardIcon, style: "bg-green-50 text-green-600" },
-  alert: { icon: AlertTriangle, style: "bg-red-50 text-red-600" },
-}
-
 const statusStyles = {
   Success: "bg-green-50 text-green-600",
   Pending: "bg-amber-50 text-amber-600",
@@ -90,135 +50,14 @@ function initials(name) {
 }
 
 function DashboardSection() {
-  const [notifOpen, setNotifOpen] = useState(false)
-  const [notifList, setNotifList] = useState(notifications)
-  const notifRef = useRef(null)
-
-  const unreadCount = notifList.filter((n) => n.unread).length
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
-
-  const markAllRead = () => {
-    setNotifList((prev) => prev.map((n) => ({ ...n, unread: false })))
-  }
-
   return (
     <div className="bg-slate-50 h-full overflow-y-auto flex flex-col">
 
-      {/* TOP BAR - kufuata muundo wa ElevenLabs: title + search + icons */}
-      <div className="flex items-center gap-4 px-4 sm:px-6 py-3 border-b border-slate-200 bg-white flex-shrink-0 relative z-10">
+      <TopBar pageTitle="Overview" />
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <SquareChevronLeft size={18} className="text-slate-400 hidden sm:block" />
-          <span className="text-slate-900 text-sm font-medium">Overview</span>
-        </div>
-
-        {/* SEARCH BAR - katikati, kama picture */}
-        <div className="flex-1 max-w-md mx-auto hidden md:flex">
-          <div className="w-full flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-400">
-            <Search size={15} />
-            <span className="text-sm">Search everything...</span>
-            <span className="ml-auto text-[11px] border border-slate-200 rounded px-1.5 py-0.5 text-slate-400">⌘K</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0 ml-auto">
-
-          <div className="relative" ref={notifRef}>
-            <button
-              type="button"
-              onClick={() => setNotifOpen((prev) => !prev)}
-              className="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors"
-              aria-label="Notifications"
-            >
-              <Bell size={17} />
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-600 rounded-full" />
-              )}
-            </button>
-
-            {notifOpen && (
-              <div className="absolute right-0 mt-2 w-[320px] sm:w-96 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50">
-
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <p className="text-slate-900 font-semibold text-sm">Notifications</p>
-                    {unreadCount > 0 && (
-                      <span className="bg-blue-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
-                        {unreadCount} new
-                      </span>
-                    )}
-                  </div>
-                  <button
-                    onClick={markAllRead}
-                    className="flex items-center gap-1 text-xs text-blue-600 hover:underline font-medium"
-                  >
-                    <CheckCheck size={13} />
-                    Mark all read
-                  </button>
-                </div>
-
-                <div className="max-h-80 overflow-y-auto">
-                  {notifList.length > 0 ? (
-                    notifList.map((n) => {
-                      const { icon: Icon, style } = notificationIcon[n.type]
-                      return (
-                        <div
-                          key={n.id}
-                          className={`flex items-start gap-3 px-4 py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors cursor-pointer ${
-                            n.unread ? "bg-blue-50/40" : ""
-                          }`}
-                        >
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${style}`}>
-                            <Icon size={14} />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="text-slate-900 text-sm font-medium leading-snug">{n.title}</p>
-                            <p className="text-slate-500 text-xs mt-0.5 leading-snug">{n.desc}</p>
-                            <p className="text-slate-400 text-[11px] mt-1">{n.time}</p>
-                          </div>
-                          {n.unread && (
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0 mt-1.5" />
-                          )}
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <p className="text-center text-slate-400 text-sm py-8">No notifications</p>
-                  )}
-                </div>
-
-                <div className="px-4 py-2.5 border-t border-slate-100">
-                  <button className="w-full text-center text-xs text-blue-600 hover:underline font-medium">
-                    View all notifications
-                  </button>
-                </div>
-
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0"
-          >
-            YM
-          </button>
-        </div>
-      </div>
-
-      {/* CONTENT */}
       <div className="p-4 sm:p-6 flex flex-col gap-5">
 
-        {/* STAT CARDS - flat, mistari nyembamba, kufuata muundo wa cards flat */}
+        {/* STAT CARDS - rows mbili za 4-4 */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           {stats.map(({ label, value, change, trend, icon: Icon }) => (
             <div
@@ -240,7 +79,6 @@ function DashboardSection() {
           ))}
         </div>
 
-        {/* CHART + RECENT CUSTOMERS */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
 
           <div className="xl:col-span-2 bg-white border border-slate-200 rounded-xl p-4 sm:p-5">
@@ -281,7 +119,6 @@ function DashboardSection() {
 
         </div>
 
-        {/* RECENT TRANSACTIONS */}
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
 
           <div className="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b border-slate-200">

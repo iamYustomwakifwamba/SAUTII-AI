@@ -1,5 +1,7 @@
+
+
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Phone, User, ShieldCheck } from "lucide-react";
 
 function SautiiLogo() {
   return (
@@ -21,15 +23,19 @@ function SautiiLogo() {
 
 function RegisterFormSection() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
-  const [fullname, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleAdminLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
     // TODO: backend logic itaunganishwa hapa baadaye
-    console.log({ email, password });
+    console.log({ fullname, email, phoneNumber, password, confirmPassword });
   };
 
   return (
@@ -39,9 +45,9 @@ function RegisterFormSection() {
       <div className="flex items-center justify-between px-6 sm:px-10 py-5">
         <SautiiLogo />
         <span className="text-slate-500 text-sm">
-          Not an admin?{" "}
+          Already an admin?{" "}
           <span className="text-blue-600 font-medium cursor-pointer hover:underline">
-            Back to sautii
+            Login
           </span>
         </span>
       </div>
@@ -61,14 +67,26 @@ function RegisterFormSection() {
 
           <div className="text-center mb-8">
             <h1 className="text-slate-900 text-2xl font-bold">
-              Login to admin panel
+              Create admin account
             </h1>
             <p className="text-slate-500 mt-1.5 text-sm">
-              Enter your credentials to access the dashboard
+              Fill in your details to get access to the dashboard
             </p>
           </div>
 
-          <form className="space-y-4" onSubmit={handleAdminLogin}>
+          <form className="space-y-4" onSubmit={handleRegister}>
+
+            {/* FULLNAME */}
+            <div>
+              <label className="text-slate-700 text-xs font-medium">Full name</label>
+              <input
+                type="text"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
+                placeholder="Yusto Mwakifwamba"
+                className="w-full mt-1.5 bg-white border border-slate-200 rounded-none px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
+              />
+            </div>
 
             {/* EMAIL */}
             <div>
@@ -82,24 +100,21 @@ function RegisterFormSection() {
               />
             </div>
 
-            {/* FULLNAME */}
+            {/* PHONE NUMBER */}
             <div>
-              <label className="text-slate-700 text-xs font-medium">Fullname</label>
+              <label className="text-slate-700 text-xs font-medium">Phone number</label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="admin@sautii.com"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="+255 712 345 678"
                 className="w-full mt-1.5 bg-white border border-slate-200 rounded-none px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
               />
             </div>
 
             {/* PASSWORD */}
             <div>
-              <div className="flex items-center justify-between">
-                <label className="text-slate-700 text-xs font-medium">Password</label>
-                <span className="text-xs text-blue-600 hover:underline cursor-pointer">Forgot password?</span>
-              </div>
+              <label className="text-slate-700 text-xs font-medium">Password</label>
               <div className="relative mt-1.5">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -118,6 +133,27 @@ function RegisterFormSection() {
               </div>
             </div>
 
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="text-slate-700 text-xs font-medium">Confirm password</label>
+              <div className="relative mt-1.5">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full bg-white border border-slate-200 rounded-none px-3 py-2.5 pr-10 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
             {/* BUTTON */}
             <button
               type="submit"
@@ -127,10 +163,10 @@ function RegisterFormSection() {
               {loading ? (
                 <>
                   <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Logging in...
+                  Creating account...
                 </>
               ) : (
-                "Login"
+                "Create account"
               )}
             </button>
 
@@ -169,4 +205,3 @@ function RegisterFormSection() {
 }
 
 export default RegisterFormSection;
-

@@ -1,9 +1,9 @@
-import LoginFormSection from "../components/section/LoginForm"
+import AdminLoginPage from "../components/section/LoginForm"
 
 function LoginPageRoute () {
     return (
         <div>
-            <LoginFormSection/>
+            <AdminLoginPage/>
         </div>
     )
 }

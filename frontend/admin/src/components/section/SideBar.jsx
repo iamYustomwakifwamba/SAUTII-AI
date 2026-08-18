@@ -29,8 +29,8 @@ function SautiiLogo() {
 }
 
 const navItems = [
-  { label: "Overview", icon: LayoutDashboard, to: "/admin", end: true },
-  { label: "Customers", icon: Users, to: "/admin/customers", end: false },
+  { label: "Overview", icon: LayoutDashboard, to: "/dashboard", end: true },
+  { label: "Customers", icon: Users, to: "/customers", end: false },
   { label: "Subscriptions", icon: CreditCard, to: "/admin/subscriptions", end: false },
   { label: "Transactions", icon: Receipt, to: "/admin/transactions", end: false },
   { label: "Staff", icon: UserCog, to: "/admin/staff", end: false },

@@ -8,12 +8,14 @@ import {
   Download,
   RefreshCw,
   UserPlus,
-  Bell,
-  Sun,
+  Eye,
+  Ban,
+  CheckCircle2,
 } from "lucide-react"
+import TopBar from "./TopBar"
 
 // dummy data ya muda -- baadaye itatolewa kwenye database
-const customers = [
+const initialCustomers = [
   { id: 1, name: "Amina Hassan", email: "amina@example.com", phone: "+255 712 345 678", plan: "Pro plan", status: "Active", joined: "Aug 7, 2026" },
   { id: 2, name: "John Mrema", email: "john@example.com", phone: "+255 713 221 004", plan: "Starter plan", status: "Active", joined: "Aug 6, 2026" },
   { id: 3, name: "Grace Kileo", email: "grace@example.com", phone: "+255 754 890 213", plan: "Business plan", status: "Suspended", joined: "Aug 5, 2026" },
@@ -31,6 +33,7 @@ function initials(name) {
 }
 
 function CustomersSection() {
+  const [customers, setCustomers] = useState(initialCustomers)
   const [selected, setSelected] = useState([])
 
   const toggleAll = (e) => {
@@ -43,27 +46,26 @@ function CustomersSection() {
     )
   }
 
+  const handleView = (customer) => {
+    // TODO: fungua modal/navigate kwenye profile ya mteja
+    console.log("View customer:", customer)
+  }
+
+  const handleToggleBan = (customer) => {
+    // TODO: unganisha na API endpoint ya kweli kubadilisha status
+    setCustomers((prev) =>
+      prev.map((c) =>
+        c.id === customer.id
+          ? { ...c, status: c.status === "Suspended" ? "Active" : "Suspended" }
+          : c
+      )
+    )
+  }
+
   return (
     <div className="bg-slate-50 h-full overflow-y-auto flex flex-col">
 
-      {/* TOP BAR - breadcrumb + icons */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-200 bg-white flex-shrink-0">
-        <div className="flex items-center gap-1.5 text-sm min-w-0">
-          <span className="text-blue-600 truncate">admin@sautii.com</span>
-          <ChevronDown size={13} className="text-slate-300 -rotate-90 flex-shrink-0" />
-          <span className="text-slate-900 font-medium">Customers</span>
-        </div>
-
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
-            <Sun size={15} />
-          </button>
-          <button className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
-            <Bell size={15} />
-            <span className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[9px] font-semibold w-4 h-4 rounded-full flex items-center justify-center">4</span>
-          </button>
-        </div>
-      </div>
+      <TopBar pageTitle="Customers" />
 
       {/* CONTENT */}
       <div className="p-4 sm:p-6">
@@ -133,7 +135,8 @@ function CustomersSection() {
                   <th className="text-left text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Phone</th>
                   <th className="text-left text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Plan</th>
                   <th className="text-left text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Status</th>
-                  <th className="text-right text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Joined</th>
+                  <th className="text-left text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Joined</th>
+                  <th className="text-right text-slate-500 text-xs font-semibold uppercase tracking-wide px-4 py-3 border-b border-slate-200 whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -170,14 +173,38 @@ function CustomersSection() {
                           {c.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 border-b border-slate-100 text-slate-400 text-right whitespace-nowrap group-hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 border-b border-slate-100 text-slate-400 whitespace-nowrap group-hover:bg-slate-50 transition-colors">
                         {c.joined}
+                      </td>
+                      <td className="px-4 py-3 border-b border-slate-100 whitespace-nowrap group-hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => handleView(c)}
+                            title="View customer"
+                            className="w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                          >
+                            <Eye size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleToggleBan(c)}
+                            title={c.status === "Suspended" ? "Unban customer" : "Ban customer"}
+                            className={`w-7 h-7 flex items-center justify-center rounded-lg border transition-colors ${
+                              c.status === "Suspended"
+                                ? "border-green-200 text-green-600 hover:bg-green-50"
+                                : "border-red-200 text-red-500 hover:bg-red-50"
+                            }`}
+                          >
+                            {c.status === "Suspended" ? <CheckCircle2 size={13} /> : <Ban size={13} />}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="text-center text-slate-400 text-sm py-16">
+                    <td colSpan={8} className="text-center text-slate-400 text-sm py-16">
                       No customers yet.
                     </td>
                   </tr>
