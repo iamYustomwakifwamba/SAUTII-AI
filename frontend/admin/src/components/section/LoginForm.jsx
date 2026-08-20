@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, ShieldCheck } from "lucide-react";
+import { adminLogin } from "../../api/auth";
+import { useNavigate } from "react-router-dom";
+import AlertBox from "../UI/AlertBox";
 
 function SautiiLogo() {
   return (
@@ -24,11 +27,65 @@ function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({type: "", message: ""})
 
-  const handleAdminLogin = (e) => {
+  const navigate = useNavigate()
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    // TODO: backend logic itaunganishwa hapa baadaye
-    console.log({ email, password });
+
+    setAlert({
+      type: "",
+      message: ""
+    })
+    
+    if (!email.trim() || !password.trim()) {
+      setAlert({
+        type:"error",
+        message: "Email and password are required",
+      })
+      return
+    }
+    
+    try {
+      setLoading(true)
+
+      const data = await adminLogin(
+        email, 
+        password
+      )
+
+      localStorage.setItem("admin_access", data.tokens.access)
+      localStorage.setItem("admin_refresh", data.tokens.refresh)
+      localStorage.setItem("admin_user", JSON.stringify(data.data))
+      
+      console.log("ROGIN RESPONSE:", data)
+
+      setAlert({
+        type: "success",
+        message: "Login successful. Redirecting....",
+      })
+
+      setTimeout(() => {
+        navigate("/dashboard")
+      }, 2000);
+
+    } catch (error) {
+
+      console.error(
+        "LOGIN ERROR",
+        error.response?.data || error.message,
+      )
+      
+      setAlert({
+        type: "error",
+        message: "Wrong email or password"
+      })
+
+    }finally{
+
+      setLoading(false)
+
+    }
   };
 
   return (
@@ -66,6 +123,15 @@ function AdminLoginPage() {
               Enter your credentials to access the dashboard
             </p>
           </div>
+
+          {alert.message && (
+            <div className="mt-5">
+              <AlertBox 
+                type={alert.type}
+                message={alert.message}
+              />
+            </div>
+          )}
 
           <form className="space-y-4" onSubmit={handleAdminLogin}>
 

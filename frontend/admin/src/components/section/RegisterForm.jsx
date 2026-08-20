@@ -1,7 +1,8 @@
-
-
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, Phone, User, ShieldCheck } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { adminRegister } from "../../api/auth";
+import AlertBox from "../UI/AlertBox";
 
 function SautiiLogo() {
   return (
@@ -25,17 +26,74 @@ function RegisterFormSection() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [fullname, setFullname] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({type: "", message: ""})
 
-  const handleRegister = (e) => {
+  const navigate = useNavigate();
+
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // TODO: backend logic itaunganishwa hapa baadaye
-    console.log({ fullname, email, phoneNumber, password, confirmPassword });
+    
+    setAlert({
+      type: "",
+      message: ""
+    });
+
+    if (
+        !firstname.trim() || !lastname.trim() || !email.trim() || 
+        !phoneNumber.trim() || !password.trim() || !confirmPassword.trim()
+      ){
+        setAlert({
+          type: "error",
+          message: "Please fill in all required fields"
+        });
+        return
+      }
+
+    if (password !== confirmPassword){
+      setAlert({
+        type: "error",
+        message: "Password do not match."
+      });
+      return
+    }
+
+    try {
+      setLoading(true)
+
+      const data = await adminRegister(
+        firstname, lastname, email, phoneNumber, password
+      );
+
+      console.log("REGISTER RESPONSE:", data);
+
+      setAlert({
+        type: "success",
+        message: "Admin account created successfully. Redirecting to login...."
+      });
+
+      setTimeout(() => {
+        navigate("/login")
+      }, 2000);
+    } catch (error) {
+      console.error(
+        "REGISTER ERROR",
+        error.response?.data || error.message
+      );
+
+      setAlert({
+        type: "error",
+        message: error.response?.data.message || "Unable to create admin account. Please try again."
+      })
+    } finally {
+      setLoading(false)
+    }
   };
 
   return (
@@ -74,18 +132,40 @@ function RegisterFormSection() {
             </p>
           </div>
 
+          {alert.message && (
+            <div className="mb-5">
+              <AlertBox
+               type={alert.type}
+               message={alert.message}
+              />
+            </div>
+          )}
+
           <form className="space-y-4" onSubmit={handleRegister}>
 
-            {/* FULLNAME */}
-            <div>
-              <label className="text-slate-700 text-xs font-medium">Full name</label>
-              <input
-                type="text"
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-                placeholder="Yusto Mwakifwamba"
-                className="w-full mt-1.5 bg-white border border-slate-200 rounded-none px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
-              />
+            {/* FIRSTNAME + LASTNAME */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-slate-700 text-xs font-medium">First name</label>
+                <input
+                  type="text"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
+                  placeholder="Yusto"
+                  className="w-full mt-1.5 bg-white border border-slate-200 rounded-none px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 text-xs font-medium">Last name</label>
+                <input
+                  type="text"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
+                  placeholder="Mwakifwamba"
+                  className="w-full mt-1.5 bg-white border border-slate-200 rounded-none px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 focus:border-blue-600 transition-colors"
+                />
+              </div>
             </div>
 
             {/* EMAIL */}
