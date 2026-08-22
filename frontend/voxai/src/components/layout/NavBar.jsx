@@ -1,10 +1,11 @@
-import { useState } from "react"
+// NavigationBarLayout.jsx
+import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { X, Menu, ArrowRight } from "lucide-react"
 
 function SautiiLogo() {
   return (
-    <Link to="/" className="flex items-center gap-2.5 group">
+    <Link to="/" className="flex items-center gap-2.5 group flex-shrink-0">
       <svg
         width="32"
         height="32"
@@ -28,6 +29,7 @@ function SautiiLogo() {
 
 function NavigationBarLayout() {
   const [openMobileNav, setOpenMobileNav] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
 
   const navLinks = [
@@ -38,25 +40,40 @@ function NavigationBarLayout() {
     { label: "Documentation", to: "/developers" },
   ]
 
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 8)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    setOpenMobileNav(false)
+  }, [location.pathname])
+
   return (
-    <div className="sticky top-0 z-50">
+    <div
+      className={`sticky top-0 z-50 transition-shadow duration-200 ${
+        scrolled ? "shadow-sm shadow-slate-900/5" : ""
+      }`}
+      style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+    >
       {/* Main bar */}
-      <div className="flex items-center justify-between px-6 md:px-12 h-14 bg-white border-b border-slate-200">
-        {/* Logo */}
+      <div className="flex items-center justify-between px-6 md:px-16 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200">
+
         <SautiiLogo />
 
         {/* Desktop nav links */}
-        <div className="hidden md:flex gap-8">
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map(({ label, to }) => {
             const isActive = location.pathname === to
             return (
               <Link
                 key={label}
                 to={to}
-                className={`relative font-sans py-1 transition-colors ${
-                  isActive ? "text-blue-600" : "text-slate-500 hover:text-blue-600"
-                } after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-blue-600 after:transition-all after:duration-200 ${
-                  isActive ? "after:w-full" : "after:w-0 hover:after:w-full"
+                className={`relative px-3.5 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? "text-slate-900 bg-slate-100"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 {label}
@@ -75,7 +92,7 @@ function NavigationBarLayout() {
           </Link>
           <Link
             to="/login"
-            className="group flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium pl-5 pr-4 py-2 rounded-full transition-all shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30"
+            className="group flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold pl-5 pr-4 py-2.5 rounded-full transition-all shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30"
           >
             Login
             <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
@@ -85,7 +102,7 @@ function NavigationBarLayout() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setOpenMobileNav((prev) => !prev)}
-          className="md:hidden text-slate-700 cursor-pointer p-1"
+          className="md:hidden text-slate-700 cursor-pointer p-2 -mr-2 rounded-lg hover:bg-slate-50 transition-colors"
           aria-label="Toggle menu"
         >
           {openMobileNav ? <X size={22} /> : <Menu size={22} />}
@@ -93,37 +110,44 @@ function NavigationBarLayout() {
       </div>
 
       {/* Mobile dropdown */}
-      {openMobileNav && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-50 bg-white border-b border-slate-200 px-6 py-4 flex flex-col gap-4 shadow-lg">
-          {navLinks.map(({ label, to }) => (
-            <Link
-              key={label}
-              to={to}
-              className="font-sans text-slate-500 hover:text-blue-600 transition-colors"
-              onClick={() => setOpenMobileNav(false)}
-            >
-              {label}
-            </Link>
-          ))}
-          <div className="border-t border-slate-200 pt-4 flex flex-col gap-3">
-            <Link
-              to="/signup"
-              className="text-center text-slate-700 font-medium border border-slate-200 rounded-full py-2.5 hover:bg-slate-50 transition-colors"
-              onClick={() => setOpenMobileNav(false)}
-            >
-              Sign up
-            </Link>
-            <Link
-              to="/login"
-              className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-center font-medium transition-colors"
-              onClick={() => setOpenMobileNav(false)}
-            >
-              Login
-              <ArrowRight size={15} />
-            </Link>
-          </div>
+      <div
+        className={`md:hidden absolute top-full left-0 right-0 z-50 bg-white border-b border-slate-200 shadow-lg overflow-hidden transition-all duration-300 ease-in-out ${
+          openMobileNav ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-6 py-4 flex flex-col gap-1">
+          {navLinks.map(({ label, to }) => {
+            const isActive = location.pathname === to
+            return (
+              <Link
+                key={label}
+                to={to}
+                className={`px-3.5 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                  isActive ? "text-slate-900 bg-slate-100" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          })}
         </div>
-      )}
+
+        <div className="border-t border-slate-200 px-6 py-4 flex flex-col gap-3">
+          <Link
+            to="/register"
+            className="text-center text-slate-700 font-medium border border-slate-200 rounded-full py-2.5 hover:bg-slate-50 transition-colors"
+          >
+            Sign up
+          </Link>
+          <Link
+            to="/login"
+            className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-center font-semibold transition-colors"
+          >
+            Login
+            <ArrowRight size={15} />
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }
